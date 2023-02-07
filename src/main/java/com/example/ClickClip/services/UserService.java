@@ -19,8 +19,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    ModelMapper modelMapper;
+//    @Autowired
+    ModelMapper modelMapper = new ModelMapper();
 
     public UserDTO add(User user) {
         // check user
