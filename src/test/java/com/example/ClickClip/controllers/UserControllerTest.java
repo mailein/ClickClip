@@ -1,17 +1,17 @@
 package com.example.ClickClip.controllers;
 
+import com.example.ClickClip.DTOs.UserDTO;
 import com.example.ClickClip.entities.Glossary;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.entities.Word;
-import com.example.ClickClip.repositories.UserRepository;
 import com.example.ClickClip.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -36,7 +36,9 @@ public class UserControllerTest {
     MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper mapper;
+    ObjectMapper objectMapper;
+
+    ModelMapper modelMapper = new ModelMapper();
 
     @Test
     public void getAllUsers_success() throws Exception {
@@ -61,19 +63,18 @@ public class UserControllerTest {
         expectedUser.setGlossaries(Set.of(g));
 
         when(userService.getAllUsers())
-                .thenReturn(List.of(expectedUser));
+                .thenReturn(List.of(modelMapper.map(expectedUser, UserDTO.class)));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                );
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id", is(1), Long.class))
-//                .andExpect(jsonPath("$[0].name", is(expectedUser.getName())))
-//                .andExpect(jsonPath("$[0].password", is(expectedUser.getPassword())))
-//                .andExpect(jsonPath("$[0].glossaries[0].id", is(1), Long.class));
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(expectedUser.getId()), Long.class))
+                .andExpect(jsonPath("$[0].name", is(expectedUser.getName())));
+//                .andExpect(jsonPath("$[0].password", is(expectedUser.getPassword())));//DTO doesn't include password
         verify(userService).getAllUsers();
     }
 }

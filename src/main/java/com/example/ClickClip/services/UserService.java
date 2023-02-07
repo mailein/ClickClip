@@ -1,5 +1,6 @@
 package com.example.ClickClip.services;
 
+import com.example.ClickClip.DTOs.UserDTO;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.exceptions.InvalidRequestException;
 import com.example.ClickClip.exceptions.NotFoundException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -20,7 +22,7 @@ public class UserService {
     @Autowired
     ModelMapper modelMapper;
 
-    public User add(User user) {
+    public UserDTO add(User user) {
         // check user
         if (user.getId() == null) {
             throw new InvalidRequestException("User id is null.");
@@ -35,7 +37,8 @@ public class UserService {
             throw new InvalidRequestException("User with username " + user.getName() + " already exists.");
         }
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return modelMapper.map(savedUser, UserDTO.class);
     }
 
     public void deleteById(Long id) {
@@ -52,21 +55,26 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " is not found."));
+        return modelMapper.map(user, UserDTO.class);
     }
 
-    public User getUserByName(String name) {
-        return userRepository.findByName(name)
+    public UserDTO getUserByName(String name) {
+        User user = userRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("User with name " + name + " is not found."));
+        return modelMapper.map(user, UserDTO.class);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> allUsers = userRepository.findAll();
+        return allUsers.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .collect(Collectors.toList());
     }
 
-    public User updateUser(User user, Long userId) {
+    public UserDTO updateUser(User user, Long userId) {
         // check user
         if (userId == null) {
             throw new InvalidRequestException("User id is null.");
@@ -82,6 +90,7 @@ public class UserService {
         existingUser.setName(user.getName());
         existingUser.setPassword(user.getPassword());
         existingUser.setGlossaries(user.getGlossaries());
-        return userRepository.save(existingUser);
+        User updatedUser = userRepository.save(existingUser);
+        return modelMapper.map(updatedUser, UserDTO.class);
     }
 }
