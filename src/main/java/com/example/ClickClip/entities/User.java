@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder //access fields in parent class
+@Table(name = "users")//in SQL/H2 User is a reserved keyword.
 public class User extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,7 @@ public class User extends AbstractEntity {
     @Column(name = "password")
     private String password;
 
-    @NotNull
+//    @NotNull
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Glossary> glossaries;

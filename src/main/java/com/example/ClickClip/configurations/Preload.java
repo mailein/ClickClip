@@ -8,12 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 @Slf4j
+@Profile("!test")//prevent this Bean from running in tests
 @Configuration
 public class Preload {
 

@@ -17,6 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@Table(name = "glossaries")
 public class Glossary extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +26,11 @@ public class Glossary extends AbstractEntity {
 
     @ToString.Exclude
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)//don't cascade from child to parent
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @NotNull
+//    @NotNull
     @ToString.Exclude
     @OneToMany(mappedBy = "glossary", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Word> words;

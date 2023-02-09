@@ -15,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@Table(name = "words")
 public class Word extends AbstractEntity {
 
     @Id
@@ -24,7 +25,7 @@ public class Word extends AbstractEntity {
 
     @NotNull
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "glossary_id", nullable = false, unique = true)
     private Glossary glossary;
 

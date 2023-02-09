@@ -22,20 +22,13 @@ public class UserService {
 //    @Autowired
     ModelMapper modelMapper = new ModelMapper();
 
-    public UserDTO add(User user) {
-        // check user
-        if (user.getId() == null) {
-            throw new InvalidRequestException("User id is null.");
+    public UserDTO add(UserDTO userDTO) {
+        // user id IS null now! The savedUser id IS NOT null!
+        if (userRepository.findByName(userDTO.getName()).isPresent()) {
+            throw new InvalidRequestException("User with username " + userDTO.getName() + " already exists.");
         }
 
-        // check repo
-        if (userRepository.findById(user.getId()).isPresent()) {
-            throw new InvalidRequestException("User with id " + user.getId() + " already exists.");
-        }
-
-        if (userRepository.findByName(user.getName()).isPresent()) {
-            throw new InvalidRequestException("User with username " + user.getName() + " already exists.");
-        }
+        User user = modelMapper.map(userDTO, User.class);
 
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDTO.class);
@@ -74,7 +67,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO updateUser(User user, Long userId) {
+    public UserDTO updateUser(UserDTO userDTO, Long userId) {
         // check user
         if (userId == null) {
             throw new InvalidRequestException("User id is null.");
@@ -87,9 +80,9 @@ public class UserService {
         }
 
         User existingUser = optionalUser.get();
-        existingUser.setName(user.getName());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setGlossaries(user.getGlossaries());
+        existingUser.setName(userDTO.getName());
+        existingUser.setPassword(userDTO.getPassword());
+//        existingUser.setGlossaries(user.getGlossaries());//user doesn't update glossaries => glossary updates user
         User updatedUser = userRepository.save(existingUser);
         return modelMapper.map(updatedUser, UserDTO.class);
     }

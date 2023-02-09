@@ -1,15 +1,17 @@
 package com.example.ClickClip.services;
 
+import com.example.ClickClip.DTOs.GlossaryDTO;
 import com.example.ClickClip.entities.Glossary;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.exceptions.NotFoundException;
 import com.example.ClickClip.repositories.GlossaryRepository;
 import com.example.ClickClip.repositories.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GlossaryService {
@@ -20,37 +22,53 @@ public class GlossaryService {
     @Autowired
     GlossaryRepository glossaryRepository;
 
-    public Set<Glossary> getAllGlossaries(Long userId) {
+    ModelMapper modelMapper = new ModelMapper();
+
+    public Set<GlossaryDTO> getAllGlossaries(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " is not found."));
 
-        return user.getGlossaries();
+        Set<Glossary> foundGlossaries = user.getGlossaries();
+        return foundGlossaries.stream()
+                .map(glossary -> modelMapper.map(glossary, GlossaryDTO.class))
+                .collect(Collectors.toSet());
     }
 
-    public Glossary getGlossaryById(Long glossaryId) {
-        return glossaryRepository.findById(glossaryId)
+    public GlossaryDTO getGlossaryById(Long glossaryId) {
+        Glossary foundGlossary = glossaryRepository.findById(glossaryId)
                 .orElseThrow(() -> new NotFoundException("Glossary with id " + glossaryId + " is not found."));
+        return modelMapper.map(foundGlossary, GlossaryDTO.class);
     }
 
-    public Glossary addGlossary(Long userId, Glossary glossary) {
+    public GlossaryDTO addGlossary(Long userId, GlossaryDTO glossaryDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " is not found."));
-        glossary.setUser(user);
-        return glossaryRepository.save(glossary);
 
-        // TODO: save on the user side???
+        Glossary glossary = modelMapper.map(glossaryDTO, Glossary.class);
+        glossary.setUser(user);
+
+        Glossary savedGlossary = glossaryRepository.save(glossary);
+
+        return modelMapper.map(savedGlossary, GlossaryDTO.class);
     }
 
-    public Glossary updateGlossary(Glossary glossary, Long glossaryId) {
+    public GlossaryDTO updateGlossary(GlossaryDTO glossaryDTO, Long glossaryId) {
         Glossary existingGlossary = glossaryRepository.findById(glossaryId)
                 .orElseThrow(() -> new NotFoundException("Glossary with id " + glossaryId + " is not found."));
 
-        existingGlossary.setName(glossary.getName());
-        existingGlossary.setWords(glossary.getWords());
-        return glossaryRepository.save(existingGlossary);
+        existingGlossary.setName(glossaryDTO.getName());
+        existingGlossary.setUser(glossaryDTO.getUser());
+        Glossary savedGlossary = glossaryRepository.save(existingGlossary);
+        return modelMapper.map(savedGlossary, GlossaryDTO.class);
     }
 
-    public void deleteGlossary(Long glossaryId){
+    public void deleteGlossary(Long glossaryId) {
         glossaryRepository.deleteById(glossaryId);
+    }
+
+    public void deleteAllGlossariesByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " is not found."));
+        glossaryRepository.deleteByUser(user);
     }
 }

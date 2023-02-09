@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.LinkedHashSet;
 
 @Slf4j
 @MappedSuperclass
@@ -32,19 +31,19 @@ public abstract class AbstractEntity implements Serializable {
     private Instant createdAt;
 
     @NotNull
-    @Column(name = "update_at")
-    private Instant updateAt;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
 
     @PrePersist
     public void prePersist() {
         Instant now = Instant.now();
         setCreatedAt(now);
-        setUpdateAt(now);
+        setUpdatedAt(now);
     }
 
     @PreUpdate
     public void preUpdate() {
-        setUpdateAt(Instant.now());
+        setUpdatedAt(Instant.now());
     }
 }
