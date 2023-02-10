@@ -16,6 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "glossaries")
+@NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user"))
 public class Glossary extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +25,7 @@ public class Glossary extends AbstractEntity {
 
     //    @ToString.Exclude
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)//don't cascade from child to parent
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)//don't cascade from child to parent
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
