@@ -10,7 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,14 +24,14 @@ public class GlossaryService {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    public Set<GlossaryDTO> getAllGlossaries(Long userId) {
+    public List<GlossaryDTO> getAllGlossaries(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " is not found."));
 
-        Set<Glossary> foundGlossaries = user.getGlossaries();
+        List<Glossary> foundGlossaries = glossaryRepository.findByUser(user);
         return foundGlossaries.stream()
                 .map(glossary -> modelMapper.map(glossary, GlossaryDTO.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public GlossaryDTO getGlossaryById(Long glossaryId) {

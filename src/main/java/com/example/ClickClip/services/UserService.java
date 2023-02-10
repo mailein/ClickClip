@@ -5,6 +5,7 @@ import com.example.ClickClip.entities.User;
 import com.example.ClickClip.exceptions.InvalidRequestException;
 import com.example.ClickClip.exceptions.NotFoundException;
 import com.example.ClickClip.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -31,6 +33,7 @@ public class UserService {
         User user = modelMapper.map(userDTO, User.class);
 
         User savedUser = userRepository.save(user);
+        log.info("[User] added "+ savedUser.toString());
         return modelMapper.map(savedUser, UserDTO.class);
     }
 

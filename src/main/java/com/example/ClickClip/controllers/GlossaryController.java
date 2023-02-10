@@ -8,16 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("glossaries")
+@RequestMapping(path = "/glossaries")
 public class GlossaryController {
     @Autowired
     GlossaryService glossaryService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Set<GlossaryDTO>> getAllGlossaries(@RequestParam("userId") Long userId) {
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<GlossaryDTO>> getAllGlossaries(@RequestParam("userId") Long userId) {
         return new ResponseEntity<>(glossaryService.getAllGlossaries(userId), HttpStatus.OK);
     }
 
@@ -26,7 +27,7 @@ public class GlossaryController {
         return new ResponseEntity<>(glossaryService.getGlossaryById(glossaryId), HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping("/user/{userId}")
     public ResponseEntity<GlossaryDTO> addGlossary(@RequestParam("userId") Long userId,
                                                    @RequestBody GlossaryDTO glossaryDTO) {
         return new ResponseEntity<>(glossaryService.addGlossary(userId, glossaryDTO), HttpStatus.OK);
@@ -44,7 +45,7 @@ public class GlossaryController {
         return new ResponseEntity<>("Deleted glossary with id " + glossaryId, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/user/{userId}")
     public ResponseEntity<String> deleteAllGlossaries(@RequestParam("userId") Long userId){
         glossaryService.deleteAllGlossariesByUser(userId);
         return new ResponseEntity<>("Deleted all glossaries from user with id " + userId, HttpStatus.OK);

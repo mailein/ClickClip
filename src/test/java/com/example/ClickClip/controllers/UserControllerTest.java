@@ -11,14 +11,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -51,16 +48,12 @@ public class UserControllerTest {
                 .id(1L)
                 .name("glossaryname")
                 .user(expectedUser)
-                .words(new LinkedHashSet<>())
                 .build();
         Word w = Word.builder()
                 .id(1L)
                 .name("wordname")
                 .glossary(g)
                 .build();
-
-        g.getWords().add(w);
-        expectedUser.setGlossaries(Set.of(g));
 
         when(userService.getAllUsers())
                 .thenReturn(List.of(modelMapper.map(expectedUser, UserDTO.class)));

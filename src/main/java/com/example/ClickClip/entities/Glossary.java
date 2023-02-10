@@ -6,9 +6,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -24,16 +22,11 @@ public class Glossary extends AbstractEntity {
     @Column(name = "glossary_id", nullable = false, updatable = false)
     private Long id;
 
-    @ToString.Exclude
+    //    @ToString.Exclude
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)//don't cascade from child to parent
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)//don't cascade from child to parent
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-//    @NotNull
-    @ToString.Exclude
-    @OneToMany(mappedBy = "glossary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Word> words;
 
     @Override
     public boolean equals(Object o) {

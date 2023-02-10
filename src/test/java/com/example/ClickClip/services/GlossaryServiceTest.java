@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,6 +31,7 @@ public class GlossaryServiceTest {
 
     UserDTO u1;
     GlossaryDTO g1;
+    GlossaryDTO g2;
 
     @BeforeEach
     public void setUp() {
@@ -40,13 +41,15 @@ public class GlossaryServiceTest {
 
         g1 = new GlossaryDTO();
         g1.setName("g1");
-//        g1.setUser(u1);
+        g2 = new GlossaryDTO();
+        g2.setName("g2");
     }
 
     @AfterEach
     public void cleanUp() {
-        userRepository.deleteAll();
+        //remove glossary before user, because glossary table has a foreign key of user_id
         glossaryRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -58,5 +61,17 @@ public class GlossaryServiceTest {
         assertEquals(expectedGlossaryDTO.getId(), testGlossaryDTO.getId());
         assertEquals(expectedGlossaryDTO.getName(), testGlossaryDTO.getName());
         assertEquals(expectedGlossaryDTO.getUser(), testGlossaryDTO.getUser());
+    }
+
+    @Test
+    public void getAllGlossaries_success(){
+        UserDTO userDTO = userService.add(u1);
+        GlossaryDTO expectedGlossaryDTO1 = glossaryService.addGlossary(userDTO.getId(), g1);
+        GlossaryDTO expectedGlossaryDTO2 = glossaryService.addGlossary(userDTO.getId(), g2);
+
+        List<GlossaryDTO> testGlossaryDTO = glossaryService.getAllGlossaries(userDTO.getId());
+        assertEquals(2, testGlossaryDTO.size());
+        assertEquals(expectedGlossaryDTO1, testGlossaryDTO.get(0));
+        assertEquals(expectedGlossaryDTO2, testGlossaryDTO.get(1));
     }
 }
