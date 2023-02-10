@@ -57,7 +57,6 @@ public class GlossaryService {
                 .orElseThrow(() -> new NotFoundException("Glossary with id " + glossaryId + " is not found."));
 
         existingGlossary.setName(glossaryDTO.getName());
-        existingGlossary.setUser(glossaryDTO.getUser());
         Glossary savedGlossary = glossaryRepository.save(existingGlossary);
         return modelMapper.map(savedGlossary, GlossaryDTO.class);
     }
@@ -69,6 +68,7 @@ public class GlossaryService {
     public void deleteAllGlossariesByUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " is not found."));
-        glossaryRepository.deleteByUser(user);
+        List<Glossary> foundGlossaries = glossaryRepository.findByUser(user);
+        foundGlossaries.forEach(glossary -> glossaryRepository.deleteById(glossary.getId()));
     }
 }

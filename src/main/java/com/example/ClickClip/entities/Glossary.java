@@ -1,11 +1,14 @@
 package com.example.ClickClip.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,6 +20,9 @@ import java.util.Objects;
 @SuperBuilder
 @Table(name = "glossaries")
 @NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user"))
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Glossary extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +34,10 @@ public class Glossary extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)//don't cascade from child to parent
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "glossary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Word> words;
 
     @Override
     public boolean equals(Object o) {
