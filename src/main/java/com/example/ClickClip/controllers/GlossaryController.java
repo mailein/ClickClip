@@ -34,7 +34,9 @@ public class GlossaryController {
     @PutMapping("/{glossaryId}")
     public ResponseEntity<GlossaryDTO> updateGlossary(@RequestBody GlossaryDTO glossaryDTO,
                                                    @PathVariable("glossaryId") Long glossaryId) {
-        return new ResponseEntity<>(glossaryService.updateGlossary(glossaryDTO, glossaryId), HttpStatus.OK);
+        //the UserDTO should have no JSON key password in GlossaryDTO
+        GlossaryDTO updatedGlossaryDTO = glossaryService.updateGlossary(glossaryDTO, glossaryId);
+        return new ResponseEntity<>(updatedGlossaryDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{glossaryId}")
