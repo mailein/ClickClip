@@ -1,12 +1,12 @@
 package com.example.ClickClip.services;
 
 import com.example.ClickClip.DTOs.UserDTO;
+import com.example.ClickClip.configurations.Entity2DTOMapper;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.exceptions.InvalidRequestException;
 import com.example.ClickClip.exceptions.NotFoundException;
 import com.example.ClickClip.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +21,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-//    @Autowired
-    ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    Entity2DTOMapper modelMapper;
 
     public UserDTO add(UserDTO userDTO) {
         // user id IS null now! The savedUser id IS NOT null!

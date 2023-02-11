@@ -1,12 +1,12 @@
 package com.example.ClickClip.services;
 
 import com.example.ClickClip.DTOs.UserDTO;
+import com.example.ClickClip.configurations.Entity2DTOMapper;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,7 +25,7 @@ public class UserServiceTest {
     @Autowired
     UserRepository repository;
 
-    ModelMapper mapper = new ModelMapper();
+    Entity2DTOMapper mapper = new Entity2DTOMapper();
 
     private UserDTO u1;
     private UserDTO u2;

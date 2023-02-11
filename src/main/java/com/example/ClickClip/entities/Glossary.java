@@ -19,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "glossaries")
-@NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user"))
+@NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user")) //Eager fetch User in Glossary
 public class Glossary extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

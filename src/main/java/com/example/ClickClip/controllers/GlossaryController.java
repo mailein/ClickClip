@@ -28,7 +28,7 @@ public class GlossaryController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<GlossaryDTO> addGlossary(@PathVariable("userId") Long userId,
                                                    @RequestBody GlossaryDTO glossaryDTO) {
-        return new ResponseEntity<>(glossaryService.addGlossary(userId, glossaryDTO), HttpStatus.OK);
+        return new ResponseEntity<>(glossaryService.addGlossary(userId, glossaryDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{glossaryId}")

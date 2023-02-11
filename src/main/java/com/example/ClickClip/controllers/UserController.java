@@ -1,9 +1,7 @@
 package com.example.ClickClip.controllers;
 
 import com.example.ClickClip.DTOs.UserDTO;
-import com.example.ClickClip.entities.User;
 import com.example.ClickClip.services.UserService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +28,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(userService.add(userDTO), HttpStatus.OK);
+        return new ResponseEntity<>(userService.add(userDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

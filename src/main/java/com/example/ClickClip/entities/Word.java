@@ -24,9 +24,9 @@ public class Word extends AbstractEntity {
     private Long id;
 
     @NotNull
-    @ToString.Exclude
+//    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "glossary_id", nullable = false, unique = true)
+    @JoinColumn(name = "glossary_id", nullable = false)
     private Glossary glossary;
 
     @Override
