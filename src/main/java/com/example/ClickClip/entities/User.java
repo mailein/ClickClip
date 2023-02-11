@@ -18,21 +18,16 @@ import java.util.Objects;
 @AllArgsConstructor
 @SuperBuilder //access fields in parent class
 @Table(name = "users")//in SQL/H2 User is a reserved keyword.
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class User extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false, updatable = false)
     private Long id;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @Column(name = "password")
     private String password;
 
-    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Glossary> glossaries;

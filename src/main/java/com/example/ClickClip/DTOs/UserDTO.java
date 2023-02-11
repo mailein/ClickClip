@@ -15,13 +15,4 @@ public class UserDTO {
     private Instant createdAt;
     private Instant updatedAt;
 
-//    @JsonIgnore
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    @JsonProperty //otherwise password is NULL in database
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
 }

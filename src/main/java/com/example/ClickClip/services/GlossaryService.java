@@ -1,12 +1,12 @@
 package com.example.ClickClip.services;
 
 import com.example.ClickClip.DTOs.GlossaryDTO;
+import com.example.ClickClip.configurations.Entity2DTOMapper;
 import com.example.ClickClip.entities.Glossary;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.exceptions.NotFoundException;
 import com.example.ClickClip.repositories.GlossaryRepository;
 import com.example.ClickClip.repositories.UserRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,8 @@ public class GlossaryService {
     @Autowired
     GlossaryRepository glossaryRepository;
 
-    ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    Entity2DTOMapper modelMapper;
 
     public List<GlossaryDTO> getAllGlossaries(Long userId) {
         User user = userRepository.findById(userId)

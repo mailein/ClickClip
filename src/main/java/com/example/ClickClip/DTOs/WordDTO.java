@@ -1,6 +1,5 @@
 package com.example.ClickClip.DTOs;
 
-import com.example.ClickClip.entities.Glossary;
 import lombok.Data;
 
 import java.time.Instant;
@@ -9,7 +8,7 @@ import java.time.Instant;
 public class WordDTO {
     private Long id;
     private String name;
-    private Glossary glossary;
+    private GlossaryDTO glossaryDTO;
     private Instant createdAt;
     private Instant updatedAt;
 }

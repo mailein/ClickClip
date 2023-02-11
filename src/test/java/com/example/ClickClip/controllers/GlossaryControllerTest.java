@@ -1,6 +1,7 @@
 package com.example.ClickClip.controllers;
 
 import com.example.ClickClip.DTOs.GlossaryDTO;
+import com.example.ClickClip.configurations.Entity2DTOMapper;
 import com.example.ClickClip.entities.Glossary;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.services.GlossaryService;
@@ -31,7 +32,7 @@ public class GlossaryControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    ModelMapper modelMapper = new ModelMapper();
+    Entity2DTOMapper modelMapper = new Entity2DTOMapper();
 
     @Test
     public void getGlossary_success() throws Exception {
@@ -55,7 +56,7 @@ public class GlossaryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(g.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(g.getName())))
-                .andExpect(jsonPath("$.user.name", is(g.getUser().getName())));
+                .andExpect(jsonPath("$.userDTO.name", is(g.getUser().getName())));
         verify(glossaryService).getGlossaryById(g.getId());
 
     }

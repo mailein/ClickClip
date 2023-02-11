@@ -60,7 +60,7 @@ public class GlossaryServiceTest {
         GlossaryDTO testGlossaryDTO = glossaryService.getGlossaryById(expectedGlossaryDTO.getId());
         assertEquals(expectedGlossaryDTO.getId(), testGlossaryDTO.getId());
         assertEquals(expectedGlossaryDTO.getName(), testGlossaryDTO.getName());
-        assertEquals(expectedGlossaryDTO.getUser(), testGlossaryDTO.getUser());
+        assertEquals(expectedGlossaryDTO.getUserDTO(), testGlossaryDTO.getUserDTO());
     }
 
     @Test

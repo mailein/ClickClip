@@ -20,9 +20,6 @@ import java.util.Objects;
 @SuperBuilder
 @Table(name = "glossaries")
 @NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user"))
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Glossary extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
