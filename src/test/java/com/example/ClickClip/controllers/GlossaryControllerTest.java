@@ -204,7 +204,7 @@ public class GlossaryControllerTest {
     }
 
     @Test
-    @DisplayName("PUT /glossaries/{glossaryId} with GlossaryDTO calls GlossaryService.updateGlossary(GlossaryDTO, glossaryId) and returns the updated GlossaryDTO of UserDTO with the same userid")
+    @DisplayName("DELETE /glossaries/user/{userId} with GlossaryDTO calls GlossaryService.deleteAllGlossariesByUser(userId)")
     public void deleteGlossaryOfUser_success() throws Exception {
         GlossaryDTO g1DTO = modelMapper.map(g1, GlossaryDTO.class);
         GlossaryDTO g2DTO = modelMapper.map(g2, GlossaryDTO.class);

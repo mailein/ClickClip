@@ -6,6 +6,7 @@ import com.example.ClickClip.entities.User;
 import com.example.ClickClip.exceptions.InvalidRequestException;
 import com.example.ClickClip.exceptions.NotFoundException;
 import com.example.ClickClip.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Transactional
 @Service
 public class UserService {
 
