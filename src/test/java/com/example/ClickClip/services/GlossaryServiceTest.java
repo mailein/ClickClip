@@ -6,7 +6,6 @@ import com.example.ClickClip.entities.Glossary;
 import com.example.ClickClip.entities.User;
 import com.example.ClickClip.repositories.GlossaryRepository;
 import com.example.ClickClip.repositories.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +38,7 @@ public class GlossaryServiceTest {
     Entity2DTOMapper modelMapper = new Entity2DTOMapper();
 
     User user;
+    User savedUser;
     Glossary g1;
     Glossary g2;
 
@@ -48,7 +48,7 @@ public class GlossaryServiceTest {
                 .name("u1")
                 .password("p1")
                 .build();
-        User saved = userRepository.save(user);
+        savedUser = userRepository.save(user);
 
         g1 = Glossary.builder()
                 .name("g1")
@@ -128,4 +128,32 @@ public class GlossaryServiceTest {
         assertThat(testGlossaryDTO.getUserDTO(), equalTo(modelMapper.map(g1, GlossaryDTO.class).getUserDTO()));
     }
 
+    @Test
+    @DisplayName("Saved 1 user and 1 glossary to repo. Delete that glossary.")
+    public void deleteGlossary_success() {
+        Glossary savedGlossary = glossaryRepository.save(g1);
+        assertThat(userRepository.findAll(), hasSize(1));
+        assertThat(glossaryRepository.findAll(), hasSize(1));
+        assertThat(glossaryRepository.findById(savedGlossary.getId()).get(), equalTo(savedGlossary));
+
+        glossaryService.deleteGlossary(savedGlossary.getId());
+
+        assertThat(glossaryRepository.findAll(), hasSize(0));
+        assertThat(userRepository.findAll(), hasSize(1));
+    }
+
+    @Test
+    @DisplayName("Saved 1 user and 2 glossaries to repo. Delete all glossaries of the user.")
+    public void deleteAllGlossaries_success(){
+        Glossary savedGlossary1 = glossaryRepository.save(g1);
+        Glossary savedGlossary2 = glossaryRepository.save(g2);
+        assertThat(userRepository.findAll(), hasSize(1));
+        assertThat(glossaryRepository.findAll(), hasSize(2));
+        assertThat(glossaryRepository.findAll(), equalTo(List.of(savedGlossary1, savedGlossary2)));
+
+        glossaryService.deleteAllGlossariesByUser(savedUser.getId());
+
+        assertThat(glossaryRepository.findAll(), hasSize(0));
+        assertThat(userRepository.findAll(), hasSize(1));
+    }
 }
