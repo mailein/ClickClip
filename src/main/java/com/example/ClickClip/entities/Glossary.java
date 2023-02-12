@@ -1,7 +1,5 @@
 package com.example.ClickClip.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -19,7 +17,9 @@ import java.util.Objects;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "glossaries")
-@NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user")) //Eager fetch User in Glossary
+// Eager fetch User in Glossary. @Transactional in Service classes should be enough to avoid
+// LazyInitializationException, but the repository methods can also be called more than once in tests.
+@NamedEntityGraph(name = "Glossary.user", attributeNodes = @NamedAttributeNode("user"))
 public class Glossary extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

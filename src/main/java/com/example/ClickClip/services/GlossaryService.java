@@ -72,9 +72,6 @@ public class GlossaryService {
     }
 
     public void deleteAllGlossariesByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + " is not found."));
-        List<Glossary> foundGlossaries = glossaryRepository.findByUserId(user.getId());
-        foundGlossaries.forEach(glossary -> glossaryRepository.deleteById(glossary.getId()));
+        glossaryRepository.deleteAllByUserId(userId);
     }
 }

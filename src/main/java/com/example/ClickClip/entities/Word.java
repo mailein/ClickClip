@@ -16,6 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "words")
+@NamedEntityGraph(name = "Word.glossary", attributeNodes = @NamedAttributeNode("glossary"))
 public class Word extends AbstractEntity {
 
     @Id

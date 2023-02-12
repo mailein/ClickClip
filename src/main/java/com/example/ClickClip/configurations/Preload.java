@@ -5,20 +5,22 @@ import com.example.ClickClip.entities.User;
 import com.example.ClickClip.entities.Word;
 import com.example.ClickClip.repositories.GlossaryRepository;
 import com.example.ClickClip.repositories.UserRepository;
+import com.example.ClickClip.repositories.WordRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-
 @Slf4j
 @Profile("!test")//prevent this Bean from running in tests
 @Configuration
 public class Preload {
+    private final WordRepository wordRepository;
+
+    public Preload(WordRepository wordRepository) {
+        this.wordRepository = wordRepository;
+    }
 
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository,
@@ -46,8 +48,16 @@ public class Preload {
                 .user(u3)
                 .build();
 
-        Word w = Word.builder()
-                .name("wordname")
+        Word w1 = Word.builder()
+                .name("w1")
+                .glossary(g1)
+                .build();
+        Word w2 = Word.builder()
+                .name("w2")
+                .glossary(g1)
+                .build();
+        Word w3 = Word.builder()
+                .name("w3")
                 .glossary(g1)
                 .build();
 
@@ -59,13 +69,17 @@ public class Preload {
             User savedU3 = userRepository.save(u3);
             log.info("Preloading " + savedU3);
 
-            log.info("Preloading "+ glossaryRepository.save(g1));
-            log.info("Preloading "+ glossaryRepository.save(g2));
+            log.info("Preloading " + glossaryRepository.save(g1));
+            log.info("Preloading " + glossaryRepository.save(g2));
 
             userRepository.deleteById(savedU1.getId());
             log.info("Deleting the preloaded user with id " + savedU1.getId());
             userRepository.deleteById(savedU2.getId());
             log.info("Deleting the preloaded user with id " + savedU2.getId());
+
+            log.info("Preloading " + wordRepository.save(w1));
+            log.info("Preloading " + wordRepository.save(w2));
+            log.info("Preloading " + wordRepository.save(w3));
         };
     }
 }

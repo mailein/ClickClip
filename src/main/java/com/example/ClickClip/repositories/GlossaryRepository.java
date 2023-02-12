@@ -15,4 +15,7 @@ public interface GlossaryRepository extends JpaRepository<Glossary, Long> {
     public Optional<Glossary> findById(Long id);
     @EntityGraph(value = "Glossary.user")
     public List<Glossary> findByUserId(Long id);
+
+    @EntityGraph(value = "Glossary.user")
+    public void deleteAllByUserId(Long id);
 }

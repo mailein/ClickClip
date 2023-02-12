@@ -1,7 +1,9 @@
 package com.example.ClickClip.configurations;
 
 import com.example.ClickClip.DTOs.GlossaryDTO;
+import com.example.ClickClip.DTOs.WordDTO;
 import com.example.ClickClip.entities.Glossary;
+import com.example.ClickClip.entities.Word;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,9 @@ public class Entity2DTOMapper extends ModelMapper{
             mapper.map(Glossary::getUser,
                     GlossaryDTO::setUserDTO);
         });
-
+        this.typeMap(Word.class, WordDTO.class).addMappings(mapper -> {
+            mapper.map(Word::getGlossary,
+                    WordDTO::setGlossaryDTO);
+        });
     }
 }
