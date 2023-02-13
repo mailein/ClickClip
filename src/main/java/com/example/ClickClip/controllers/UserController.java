@@ -2,8 +2,10 @@ package com.example.ClickClip.controllers;
 
 import com.example.ClickClip.DTOs.UserDTO;
 import com.example.ClickClip.services.UserService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,33 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.add(userDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDTO> register(@RequestParam("username") @NotNull String name,
+                                            @RequestParam("password") @NotNull String password) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(name);
+        userDTO.setPassword(password);
+        return this.addUser(userDTO);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestParam("username") @NotNull String name,
+                                        @RequestParam("password") @NotNull String password) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(name);
+        userDTO.setPassword(password);
+        boolean success = userService.login(userDTO);
+        if (success) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Hello, " + name);
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Incorrect username or password");
+        }
     }
 
     @PutMapping("/{id}")

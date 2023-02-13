@@ -196,5 +196,77 @@ public class UserControllerTest {
         verify(userService, times(2)).getAllUsers();
     }
 
+    @Test
+    @DisplayName("Register success")
+    public void register_success() throws Exception {
+        u1 = User.builder()
+                .name("u1")
+                .password("p1")
+                .build();
+        UserDTO u1DTO = modelMapper.map(u1, UserDTO.class);
+        User u1WithId = User.builder()
+                .id(1L)
+                .name(u1.getName())
+                .password(u1.getPassword())
+                .build();
+        UserDTO u1IdDTO = modelMapper.map(u1WithId, UserDTO.class);
 
+        when(userService.add(u1DTO))
+                .thenReturn(u1IdDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users" + "/register")
+                        .queryParam("username", u1DTO.getName())
+                        .queryParam("password", u1DTO.getPassword())
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.id", is(u1WithId.getId()), Long.class));
+    }
+
+    @Test
+    @DisplayName("login success")
+    public void login_success() throws Exception {
+        u1 = User.builder()
+                .name("u1")
+                .password("p1")
+                .build();
+        UserDTO u1DTO = modelMapper.map(u1, UserDTO.class);
+
+        when(userService.login(u1DTO))
+                .thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users" + "/login")
+                        .queryParam("username", u1DTO.getName())
+                        .queryParam("password", u1DTO.getPassword())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", equalTo("Hello, " + u1DTO.getName())));
+        verify(userService).login(u1DTO);
+    }
+
+    @Test
+    @DisplayName("login failure")
+    public void login_failure() throws Exception {
+        u1 = User.builder()
+                .name("u1")
+                .password("p1")
+                .build();
+        UserDTO u1DTO = modelMapper.map(u1, UserDTO.class);
+
+        when(userService.login(u1DTO))
+                .thenReturn(false);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/users" + "/login")
+                        .queryParam("username", u1DTO.getName())
+                        .queryParam("password", u1DTO.getPassword())
+                        .accept(MediaType.TEXT_PLAIN)
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$", equalTo("Incorrect username or password")));
+        verify(userService).login(u1DTO);
+    }
 }

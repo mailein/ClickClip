@@ -35,8 +35,15 @@ public class UserService {
         User user = modelMapper.map(userDTO, User.class);
 
         User savedUser = userRepository.save(user);
-        log.info("[User] added "+ savedUser.toString());
+        log.info("[User] added " + savedUser.toString());
         return modelMapper.map(savedUser, UserDTO.class);
+    }
+
+    public boolean login(UserDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findByName(userDTO.getName());
+        boolean success = optionalUser.map(user -> user.getPassword().equals(userDTO.getPassword())).orElse(false);
+        log.info(userDTO.getName() + (success ? " logs in successfully." : " can't log in."));
+        return success;
     }
 
     public void deleteById(Long id) {

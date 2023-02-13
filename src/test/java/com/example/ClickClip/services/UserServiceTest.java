@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -49,14 +49,18 @@ public class UserServiceTest {
     @Test
     public void getUserById_success() {
         User user = repository.save(mapper.map(u1, User.class));
+
         UserDTO userDTO = service.getUserById(user.getId());
+
         assertEquals(u1.getName(), userDTO.getName());
     }
 
     @Test
     public void getUserByName_success() {
         User user = repository.save(mapper.map(u1, User.class));
+
         UserDTO userDTO = service.getUserByName(u1.getName());
+
         assertEquals(user.getId(), userDTO.getId());
     }
 
@@ -68,6 +72,7 @@ public class UserServiceTest {
         UserDTO userDTO2 = mapper.map(user2, UserDTO.class);
 
         List<UserDTO> testUsers = service.getAllUsers();
+
         assertEquals(2, testUsers.size());
         assertEquals(userDTO1, testUsers.get(0));
         assertEquals(userDTO2, testUsers.get(1));
@@ -85,24 +90,45 @@ public class UserServiceTest {
     public void addUser_success() {
         UserDTO testUserDTO = service.add(u1);
 
-        UserDTO expectedUserDTO = service.getUserById(testUserDTO.getId());
-        assertEquals(expectedUserDTO.getId(), testUserDTO.getId());
-        assertEquals(expectedUserDTO.getName(), testUserDTO.getName());
+        User expectedUser = repository.findById(testUserDTO.getId()).get();
+
+        assertEquals(expectedUser.getId(), testUserDTO.getId());
+        assertEquals(expectedUser.getName(), testUserDTO.getName());
     }
 
     @Test
     public void updateUser_success() {
-        UserDTO userDTO1 = service.add(u1);
-        UserDTO userDTO2 = service.updateUser(u2, userDTO1.getId());
-        UserDTO updatedUserDTO1 = service.getUserById(userDTO1.getId());
-        assertEquals(userDTO2.getName(), updatedUserDTO1.getName());
-        assertEquals(userDTO2.getPassword(), updatedUserDTO1.getPassword());
+        User savedU1 = repository.save(mapper.map(u1, User.class));
+
+        UserDTO userDTO2 = service.updateUser(u2, savedU1.getId());
+
+        User updatedU1 = repository.findById(savedU1.getId()).get();
+        assertEquals(userDTO2.getName(), updatedU1.getName());
+        assertEquals(userDTO2.getPassword(), updatedU1.getPassword());
     }
 
     @Test
     public void deleteUser_success() {
         User user = repository.save(mapper.map(u1, User.class));
+
         service.deleteById(user.getId());
+
         assertEquals(0, service.getAllUsers().size());
+    }
+
+    @Test
+    public void login_success() {
+        User user = repository.save(mapper.map(u1, User.class));
+
+        boolean success = service.login(u1);
+
+        assertTrue(success);
+    }
+
+    @Test
+    public void login_failure() {
+        boolean success = service.login(u1);
+
+        assertFalse(success);
     }
 }
