@@ -30,3 +30,5 @@ localhost:8080/users
 
 ### Doc
 Access Swagger UI under http://localhost:8080/swagger-ui.html after starting the application.
+
+![API in Swagger UI](SwaggerUI.png)
