@@ -3,6 +3,8 @@ package com.example.FlashCards.services;
 import com.example.FlashCards.DTOs.UserDTO;
 import com.example.FlashCards.configurations.Entity2DTOMapper;
 import com.example.FlashCards.entities.User;
+import com.example.FlashCards.exceptions.InvalidRequestException;
+import com.example.FlashCards.exceptions.NotFoundException;
 import com.example.FlashCards.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
@@ -56,12 +59,27 @@ public class UserServiceTest {
     }
 
     @Test
+    public void getUserById_failure() {
+        assertThatThrownBy(() -> service.getUserById(1L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("User with id 1 is not found.");
+    }
+
+    @Test
     public void getUserByName_success() {
         User user = repository.save(mapper.map(u1, User.class));
 
         UserDTO userDTO = service.getUserByName(u1.getName());
 
         assertEquals(user.getId(), userDTO.getId());
+    }
+
+    @Test
+    public void getUserByName_failure() {
+        String name = "blabla";
+        assertThatThrownBy(() -> service.getUserByName(name))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("User with name " + name + " is not found.");
     }
 
     @Test
@@ -97,6 +115,15 @@ public class UserServiceTest {
     }
 
     @Test
+    public void addUserWithExistingName_failure() {
+        repository.save(mapper.map(u1, User.class));
+
+        assertThatThrownBy(() -> service.add(u1))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("User with username " + u1.getName() + " already exists.");
+    }
+
+    @Test
     public void updateUser_success() {
         User savedU1 = repository.save(mapper.map(u1, User.class));
 
@@ -108,12 +135,34 @@ public class UserServiceTest {
     }
 
     @Test
+    public void updateUser_failure() {
+        assertThatThrownBy(() -> service.updateUser(u2, null))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("User id is null.");
+
+        assertThatThrownBy(() -> service.updateUser(u2, 1L))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("User with id 1 doesn't exist.");
+    }
+
+    @Test
     public void deleteUser_success() {
         User user = repository.save(mapper.map(u1, User.class));
 
         service.deleteById(user.getId());
 
         assertEquals(0, service.getAllUsers().size());
+    }
+
+    @Test
+    public void deleteUser_failure() {
+        assertThatThrownBy(() -> service.deleteById(null))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("User id is null.");
+
+        assertThatThrownBy(() -> service.deleteById(1L))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessage("User with id 1 doesn't exist.");
     }
 
     @Test
