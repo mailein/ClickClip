@@ -38,6 +38,8 @@ public class UserControllerTest {
     User u1;
     User u2;
 
+    String baseURL = "/users";
+
     @Test
     @DisplayName("GET /users calls UserService.getAllUsers() to return all UserDTOs without password")
     public void getAllUsers_success() throws Exception {
@@ -58,7 +60,7 @@ public class UserControllerTest {
                 .thenReturn(userDTOs);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/users")
+                        .get(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -84,7 +86,7 @@ public class UserControllerTest {
                 .thenReturn(modelMapper.map(u1, UserDTO.class));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/users" + "/" + u1.getId())
+                        .get(baseURL + "/" + u1.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -108,7 +110,7 @@ public class UserControllerTest {
                 .thenReturn(u1DTO);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users")
+                        .post(baseURL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(u1DTO))
@@ -145,7 +147,7 @@ public class UserControllerTest {
                 .thenReturn(updatedU1DTO);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/users" + "/" + u1.getId())
+                        .put(baseURL + "/" + u1.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(u2DTO))
@@ -172,21 +174,21 @@ public class UserControllerTest {
                 .thenReturn(List.of());
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/users")
+                        .get(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/users" + "/" + u1.getId())
+                        .delete(baseURL + "/" + u1.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("Deleted use with id " + u1.getId())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/users")
+                        .get(baseURL)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -215,7 +217,7 @@ public class UserControllerTest {
                 .thenReturn(u1IdDTO);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users" + "/register")
+                        .post(baseURL + "/register")
                         .queryParam("username", u1DTO.getName())
                         .queryParam("password", u1DTO.getPassword())
                         .accept(MediaType.APPLICATION_JSON)
@@ -238,7 +240,7 @@ public class UserControllerTest {
                 .thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users" + "/login")
+                        .post(baseURL + "/login")
                         .queryParam("username", u1DTO.getName())
                         .queryParam("password", u1DTO.getPassword())
                 )
@@ -260,7 +262,7 @@ public class UserControllerTest {
                 .thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/users" + "/login")
+                        .post(baseURL + "/login")
                         .queryParam("username", u1DTO.getName())
                         .queryParam("password", u1DTO.getPassword())
                         .accept(MediaType.TEXT_PLAIN)

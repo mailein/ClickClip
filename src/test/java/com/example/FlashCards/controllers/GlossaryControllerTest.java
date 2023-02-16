@@ -45,6 +45,8 @@ public class GlossaryControllerTest {
     Glossary g1Updated;
     Glossary g2;
 
+    String baseURL = "/glossaries";
+
     @BeforeEach
     public void setUp() {
         user = User.builder()
@@ -80,7 +82,7 @@ public class GlossaryControllerTest {
                 .thenReturn(modelMapper.map(g1, GlossaryDTO.class));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/glossaries" + "/" + g1.getId())
+                        .get(baseURL + "/" + g1.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -102,7 +104,7 @@ public class GlossaryControllerTest {
                 .thenReturn(glossaryDTOList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/glossaries" + "/user" + "/" + user.getId())
+                        .get(baseURL + "/user" + "/" + user.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -126,7 +128,7 @@ public class GlossaryControllerTest {
                 .thenReturn(g1DTO);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/glossaries" + "/user" + "/" + user.getId())
+                        .post(baseURL + "/user" + "/" + user.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(g1WithoutUserDTO))
@@ -153,7 +155,7 @@ public class GlossaryControllerTest {
 
         //UserDTO in GlossaryDTO has the JSON key password can cause problem in mock test
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/glossaries" + "/" + g1DTO.getId())
+                        .put(baseURL + "/" + g1DTO.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(g2DTO))
@@ -178,7 +180,7 @@ public class GlossaryControllerTest {
                 .thenThrow(new NotFoundException("Glossary with id " + g1DTO.getId() + " is not found."));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/glossaries" + "/" + g1DTO.getId())
+                        .get(baseURL + "/" + g1DTO.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -188,13 +190,13 @@ public class GlossaryControllerTest {
                 .andExpect(jsonPath("$.userDTO.name", is(g1DTO.getUserDTO().getName())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/glossaries" + "/" + g1DTO.getId())
+                        .delete(baseURL + "/" + g1DTO.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("Deleted glossary with id " + g1DTO.getId())));
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/glossaries" + "/" + g1DTO.getId())
+                        .get(baseURL + "/" + g1DTO.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound());
@@ -216,21 +218,21 @@ public class GlossaryControllerTest {
                 .thenReturn(List.of());
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/glossaries" + "/user" + "/" + user.getId())
+                        .get(baseURL + "/user" + "/" + user.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(glossaryDTOList.size())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/glossaries" + "/user" + "/" + user.getId())
+                        .delete(baseURL + "/user" + "/" + user.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("Deleted all glossaries from user with id " + user.getId())));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/glossaries" + "/user" + "/" + user.getId())
+                        .get(baseURL + "/user" + "/" + user.getId())
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
