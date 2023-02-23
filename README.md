@@ -1,5 +1,5 @@
 ### Introduction
-This is a flashcards application.
+This is a flashcards application, to practise what I've learned about Spring related technologies.
 
 It has 3 parts: User, Glossary, Word. 
 One user can set up many glossaries and one glossary can contain many words.
